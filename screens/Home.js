@@ -1,12 +1,18 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, StatusBar } from "react-native";
 
 const HomeScreen = () => {
   return (
-    <View>
-      <Text>Home</Text>
+    <View style={styles.container}>
+      <Text>All Tasks</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: StatusBar.currentHeight,
+  },
+});
 
 export default HomeScreen;

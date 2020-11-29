@@ -34,3 +34,5 @@ function makeid(length) {
   }
   return result;
 }
+
+export default TaskReducer;
