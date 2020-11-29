@@ -1,17 +1,47 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import HomeScreen from "./screens/HomeScreen";
+import React, { useState } from "react";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import HomeScreen from "./screens/Home";
+import CompletedScreen from "./screens/Completed";
+import { NavigationContainer } from "@react-navigation/native";
+import { Entypo } from "@expo/vector-icons";
+import { BottomNavigation, Text } from "react-native-paper";
 
-export default function App() {
-  return <HomeScreen />;
-}
+const Tab = createMaterialBottomTabNavigator();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        activeColor="#f0edf6"
+        inactiveColor="#3e2465"
+        initialRouteName="Tasks"
+        shifting={true}
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            if (route.name === "Tasks") {
+              iconName = "list";
+            } else if (route.name === "Completed") {
+              iconName = "check";
+            }
+            return <Entypo name={iconName} size={24} color={color} />;
+          },
+          tabBarColor: (data) => console.log(data),
+        })}
+      >
+        <Tab.Screen
+          name="Tasks"
+          component={HomeScreen}
+          options={{ tabBarBadge: 3, tabBarColor: "#607D8B" }}
+        />
+        <Tab.Screen
+          name="Completed"
+          component={CompletedScreen}
+          options={{ tabBarBadge: 3, tabBarColor: "#3F51B5" }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
