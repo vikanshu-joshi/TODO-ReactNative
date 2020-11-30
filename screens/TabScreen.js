@@ -11,14 +11,15 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 const Tab = createMaterialBottomTabNavigator();
 
 const TabScreen = (props) => {
-  const TaskState = useSelector((state) => state.tasks);
+  const allTasks = useSelector((state) => state.tasks.allTasks);
+  const completedTasks = useSelector((state) => state.tasks.completedTasks);
 
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
         <View style={{ marginEnd: 16 }}>
           <TouchableWithoutFeedback
-            onPress={() => props.navigation.navigate("AddTask")}
+            onPress={() => props.navigation.push("AddTask")}
           >
             <Entypo name="add-to-list" size={24} color="white" />
           </TouchableWithoutFeedback>
@@ -43,17 +44,16 @@ const TabScreen = (props) => {
           }
           return <Entypo name={iconName} size={24} color={color} />;
         },
-        tabBarColor: (data) => console.log(data),
       })}
     >
       <Tab.Screen
         name="Tasks"
         component={HomeScreen}
         options={
-          TaskState.allTasks.length === 0
+          allTasks.length === 0
             ? { tabBarColor: Colors.primary, title: "Upcoming Tasks" }
             : {
-                tabBarBadge: TaskState.allTasks.length,
+                tabBarBadge: allTasks.length,
                 tabBarColor: Colors.primary,
                 title: "Upcoming Tasks",
               }
@@ -63,10 +63,10 @@ const TabScreen = (props) => {
         name="Completed"
         component={CompletedScreen}
         options={
-          TaskState.completedTasks.length === 0
+          completedTasks.length === 0
             ? { tabBarColor: Colors.primary, title: "Completed Tasks" }
             : {
-                tabBarBadge: TaskState.completedTasks.length,
+                tabBarBadge: completedTasks.length,
                 tabBarColor: Colors.primary,
                 title: "Completed Tasks",
               }

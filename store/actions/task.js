@@ -3,7 +3,7 @@ export const DELETE_TASK = "DELETE_TASK";
 export const COMPLETE_TASK = "COMPLETE_TASK";
 
 export const addNewTask = (task) => {
-  return { type: ADD_TO_CART, task: task };
+  return { type: ADD_TASK, task: task };
 };
 
 export const deleteTask = (id) => {

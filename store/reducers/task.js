@@ -7,19 +7,33 @@ const initialState = {
 
 const TaskReducer = (state = initialState, action) => {
   if (action.type === TaskActions.ADD_TASK) {
-    state.allTasks.push({
+    const newTask = {
       id: makeid(5),
       title: action.task.title,
       description: action.task.description,
       date: action.task.date,
       time: action.task.time,
-    });
+    };
+    return {
+      ...state,
+      allTasks: state.allTasks.concat(newTask),
+      completedTasks: state.completedTasks,
+    };
   } else if (action.type === TaskActions.COMPLETE_TASK) {
     const newTask = state.allTasks.find((t) => t.id === action.id);
-    state.allTasks = state.allTasks.filter((item) => item !== action.id);
+    return {
+      ...state,
+      allTasks: state.allTasks.filter((item) => item.id !== action.id),
+      completedTasks: state.completedTasks.concat(newTask),
+    };
   } else if (action.type === TaskActions.DELETE_TASK) {
-    state.allTasks = state.allTasks.filter((item) => item !== action.id);
-    state.completedTasks = state.allTasks.filter((item) => item !== action.id);
+    return {
+      ...state,
+      allTasks: state.allTasks.filter((item) => item.id !== action.id),
+      completedTasks: state.completedTasks.filter(
+        (item) => item.id !== action.id
+      ),
+    };
   }
   return state;
 };

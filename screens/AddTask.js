@@ -1,12 +1,161 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TouchableNativeFeedback,
+} from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import Colors from "../Constants/Colors";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useDispatch } from "react-redux";
+import * as TaskActions from "../store/actions/task";
 
-const AddTaskScreen = () => {
+const AddTaskScreen = (props) => {
+  const [taskName, setTaskName] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+  };
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
+  };
+
+  const validateTask = () => {
+    if (taskName.length === 0) {
+      alert("Enter a valid task name");
+    } else {
+      dispatch(
+        TaskActions.addNewTask({
+          title: taskName,
+          description: description,
+          date: date.toDateString(),
+          time: formatAMPM(date),
+        })
+      );
+      props.navigation.pop();
+    }
+  };
+
   return (
-    <View>
-      <Text>Add Task</Text>
+    <View style={styles.container}>
+      <View style={[styles.input__holder, { maxWidth: "70%" }]}>
+        <TextInput
+          style={styles.input}
+          placeholder="Task Name"
+          placeholderTextColor="#5F5F5F"
+          onChangeText={(value) => setTaskName(value)}
+        />
+      </View>
+
+      <View style={styles.input__holder}>
+        <TextInput
+          style={styles.input}
+          placeholder="Description"
+          placeholderTextColor="#5F5F5F"
+          onChangeText={(value) => setDescription(value)}
+        />
+      </View>
+
+      <View style={styles.input__container}>
+        <TouchableNativeFeedback useForeground onPress={showDatepicker}>
+          <View style={styles.input__holder}>
+            <Text style={styles.input__pickers}>{date.toDateString()}</Text>
+          </View>
+        </TouchableNativeFeedback>
+      </View>
+
+      <View style={styles.input__container}>
+        <TouchableNativeFeedback useForeground onPress={showTimepicker}>
+          <View style={styles.input__holder}>
+            <Text style={styles.input__pickers}>{formatAMPM(date)}</Text>
+          </View>
+        </TouchableNativeFeedback>
+      </View>
+
+      <TouchableNativeFeedback useForeground onPress={validateTask}>
+        <View style={styles.btn__container}>
+          <Text style={styles.input}>Save</Text>
+        </View>
+      </TouchableNativeFeedback>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode={mode}
+          is24Hour={false}
+          display="default"
+          onChange={onChange}
+        />
+      )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    flex: 1,
+    backgroundColor: "white",
+  },
+  input__container: {
+    flexDirection: "row",
+  },
+  input__holder: {
+    backgroundColor: "#D5D5D5",
+    marginBottom: 22,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 80,
+    overflow: "hidden",
+  },
+  input: {
+    fontSize: 18,
+    color: "black",
+  },
+  input__pickers: {
+    fontSize: 18,
+    color: "#5F5F5F",
+  },
+  btn__container: {
+    width: "100%",
+    backgroundColor: Colors.accent,
+    marginBottom: 22,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+});
+
+function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  var strTime = hours + ":" + minutes + " " + ampm;
+  return strTime;
+}
 
 export default AddTaskScreen;
