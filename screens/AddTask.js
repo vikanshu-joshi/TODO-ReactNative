@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Button,
   TouchableNativeFeedback,
+  Alert,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import Colors from "../Constants/Colors";
@@ -12,39 +13,45 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch } from "react-redux";
 import * as TaskActions from "../store/actions/task";
 
+const nameReducer = (state, action) => {
+  return {
+    ...state,
+    name: action.text || state.name,
+    error:
+      action.text === undefined || action.text === "" ? "Name is empty" : "",
+  };
+};
+
 const AddTaskScreen = (props) => {
-  const [taskName, setTaskName] = useState("");
+  const [nameState, nameDispatcher] = useReducer(nameReducer, {
+    name: "",
+    error: "",
+  });
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
+  const [pickerState, setPickerState] = useState({
+    mode: "date",
+    show: false,
+  });
   const dispatch = useDispatch();
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === "ios");
+    setPickerState({ mode: pickerState.mode, show: Platform.OS === "ios" });
     setDate(currentDate);
   };
+
   const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
+    setPickerState({ mode: currentMode, show: true });
   };
 
   const validateTask = () => {
-    if (taskName.length === 0) {
-      alert("Enter a valid task name");
+    if (nameState.name.length === 0) {
+      Alert.alert("Error", "Enter a valid task name");
     } else {
       dispatch(
         TaskActions.addNewTask({
-          title: taskName,
+          title: nameState.name,
           description: description,
           date: date.toDateString(),
           time: formatAMPM(date),
@@ -61,7 +68,7 @@ const AddTaskScreen = (props) => {
           style={styles.input}
           placeholder="Task Name"
           placeholderTextColor="#5F5F5F"
-          onChangeText={(value) => setTaskName(value)}
+          onChangeText={(value) => nameDispatcher({ text: value })}
         />
       </View>
 
@@ -75,7 +82,7 @@ const AddTaskScreen = (props) => {
       </View>
 
       <View style={styles.input__container}>
-        <TouchableNativeFeedback useForeground onPress={showDatepicker}>
+        <TouchableNativeFeedback useForeground onPress={() => showMode("date")}>
           <View style={styles.input__holder}>
             <Text style={styles.input__pickers}>{date.toDateString()}</Text>
           </View>
@@ -83,7 +90,7 @@ const AddTaskScreen = (props) => {
       </View>
 
       <View style={styles.input__container}>
-        <TouchableNativeFeedback useForeground onPress={showTimepicker}>
+        <TouchableNativeFeedback useForeground onPress={() => showMode("time")}>
           <View style={styles.input__holder}>
             <Text style={styles.input__pickers}>{formatAMPM(date)}</Text>
           </View>
@@ -91,11 +98,21 @@ const AddTaskScreen = (props) => {
       </View>
 
       <TouchableNativeFeedback useForeground onPress={validateTask}>
-        <View style={styles.btn__container}>
-          <Text style={styles.input}>Save</Text>
+        <View
+          style={
+            nameState.error === ""
+              ? styles.btn__container
+              : styles.btn__container_error
+          }
+        >
+          <Text
+            style={nameState.error === "" ? styles.input : styles.input__error}
+          >
+            {nameState.error === "" ? "Save" : nameState.error}
+          </Text>
         </View>
       </TouchableNativeFeedback>
-      {show && (
+      {pickerState.show && (
         <DateTimePicker
           testID="dateTimePicker"
           value={date}
@@ -130,6 +147,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "black",
   },
+  input__error: {
+    fontSize: 18,
+    color: "white",
+  },
   input__pickers: {
     fontSize: 18,
     color: "#5F5F5F",
@@ -137,6 +158,17 @@ const styles = StyleSheet.create({
   btn__container: {
     width: "100%",
     backgroundColor: Colors.accent,
+    marginBottom: 22,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  btn__container_error: {
+    width: "100%",
+    backgroundColor: "red",
     marginBottom: 22,
     paddingHorizontal: 16,
     paddingVertical: 8,
