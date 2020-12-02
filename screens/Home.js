@@ -6,7 +6,7 @@ import ListTile from "../Components/ListTile";
 import * as TaskActions from "../store/actions/task";
 import { useDispatch } from "react-redux";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const allTasks = useSelector((state) => state.tasks.allTasks);
   const dispatch = useDispatch();
   const deleteTask = (id) => {
@@ -29,8 +29,10 @@ const HomeScreen = () => {
           title={itemData.item.title}
           subtitle={`${itemData.item.date} - ${itemData.item.time}`}
           completed={false}
+          failed={itemData.item.timestamp <= new Date().getTime()}
           onDelete={() => deleteTask(itemData.item.id)}
           onMarkComplete={() => completeTask(itemData.item.id)}
+          onPress={() => navigation.push("Task", { task: itemData.item })}
         />
       )}
     />

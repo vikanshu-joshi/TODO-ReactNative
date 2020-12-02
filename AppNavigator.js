@@ -5,6 +5,7 @@ import TabScreen from "./screens/TabScreen";
 import AddTaskScreen from "./screens/AddTask";
 import Colors from "./Constants/Colors";
 import { Platform } from "react-native";
+import ParticularTask from "./screens/ParticularTask";
 
 const AppNavigator = () => {
   const Stack = createStackNavigator();
@@ -30,6 +31,11 @@ const AppNavigator = () => {
           name="AddTask"
           component={AddTaskScreen}
           options={{ headerTitle: "Add New Task" }}
+        />
+        <Stack.Screen
+          name="Task"
+          component={ParticularTask}
+          options={({ route }) => ({ title: route.params.task.title })}
         />
       </Stack.Navigator>
     </NavigationContainer>

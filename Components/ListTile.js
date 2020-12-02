@@ -1,16 +1,37 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { TouchableNativeFeedback } from "react-native-gesture-handler";
+import {
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 
-const ListTile = ({ title, subtitle, onDelete, onMarkComplete, completed }) => {
+const ListTile = ({
+  title,
+  subtitle,
+  onDelete,
+  onMarkComplete,
+  completed,
+  failed,
+  onPress,
+}) => {
   return (
     <View style={styles.card}>
-      <View style={{ flexDirection: "column" }}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
-      </View>
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View style={{ flexDirection: "column", flex: 1 }}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{subtitle}</Text>
+        </View>
+      </TouchableWithoutFeedback>
       <View style={styles.actions}>
+        {failed && (
+          <TouchableNativeFeedback
+            useForeground
+            onPress={() => Alert.alert("Warning", "Task Deadline Reached")}
+          >
+            <Entypo style={styles.check} name="warning" size={24} color="red" />
+          </TouchableNativeFeedback>
+        )}
         {!completed && (
           <TouchableNativeFeedback useForeground onPress={onMarkComplete}>
             <Entypo style={styles.check} name="check" size={24} color="green" />

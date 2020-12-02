@@ -6,6 +6,7 @@ const initialState = {
 };
 
 const TaskReducer = (state = initialState, action) => {
+  console.log(action);
   if (action.type === TaskActions.ADD_TASK) {
     const newTask = {
       id: makeid(5),
@@ -13,6 +14,7 @@ const TaskReducer = (state = initialState, action) => {
       description: action.task.description,
       date: action.task.date,
       time: action.task.time,
+      timestamp: action.task.timestamp,
     };
     return {
       ...state,

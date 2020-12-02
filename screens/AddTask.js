@@ -55,6 +55,7 @@ const AddTaskScreen = (props) => {
           description: description,
           date: date.toDateString(),
           time: formatAMPM(date),
+          timestamp: date.getTime(),
         })
       );
       props.navigation.pop();
@@ -116,7 +117,7 @@ const AddTaskScreen = (props) => {
         <DateTimePicker
           testID="dateTimePicker"
           value={date}
-          mode={mode}
+          mode={pickerState.mode}
           is24Hour={false}
           display="default"
           onChange={onChange}
