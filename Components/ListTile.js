@@ -17,12 +17,12 @@ const ListTile = ({
 }) => {
   return (
     <View style={styles.card}>
-      <TouchableWithoutFeedback onPress={onPress}>
-        <View style={{ flexDirection: "column", flex: 1 }}>
+      <View style={{ flexDirection: "column", flex: 1 }}>
+        <TouchableWithoutFeedback style={{ width: "100%" }} onPress={onPress}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </View>
       <View style={styles.actions}>
         {failed && (
           <TouchableNativeFeedback

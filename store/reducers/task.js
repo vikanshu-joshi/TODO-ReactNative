@@ -6,7 +6,6 @@ const initialState = {
 };
 
 const TaskReducer = (state = initialState, action) => {
-  console.log(action);
   if (action.type === TaskActions.ADD_TASK) {
     const newTask = {
       id: makeid(5),
@@ -15,6 +14,7 @@ const TaskReducer = (state = initialState, action) => {
       date: action.task.date,
       time: action.task.time,
       timestamp: action.task.timestamp,
+      added: new Date().getTime(),
     };
     return {
       ...state,
@@ -23,6 +23,7 @@ const TaskReducer = (state = initialState, action) => {
     };
   } else if (action.type === TaskActions.COMPLETE_TASK) {
     const newTask = state.allTasks.find((t) => t.id === action.id);
+    newTask.completedTimeStamp = new Date().getTime();
     return {
       ...state,
       allTasks: state.allTasks.filter((item) => item.id !== action.id),
