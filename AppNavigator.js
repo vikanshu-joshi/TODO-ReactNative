@@ -1,5 +1,9 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import TabScreen from "./screens/TabScreen";
 import AddTaskScreen from "./screens/AddTask";

@@ -7,6 +7,7 @@ import * as TaskActions from "../store/actions/task";
 import { useDispatch } from "react-redux";
 
 const HomeScreen = ({ navigation }) => {
+  //getting state from redux
   const allTasks = useSelector((state) => state.tasks.allTasks);
   const dispatch = useDispatch();
   const deleteTask = (id) => {
@@ -16,6 +17,7 @@ const HomeScreen = ({ navigation }) => {
     dispatch(TaskActions.completeTask(id));
   };
 
+  //if no tasks then return text placeholder else return flatlist
   return allTasks.length === 0 ? (
     <View style={styles.container}>
       <Text style={styles.placeholder}>No upcoming tasks</Text>
@@ -39,11 +41,13 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
+//styles for views
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "white",
   },
   placeholder: {
     fontSize: 22,

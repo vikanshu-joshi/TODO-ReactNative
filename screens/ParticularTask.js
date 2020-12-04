@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from "react-native";
 
 const ParticularTask = ({ route, navigation }) => {
   const task = route.params.task;
-  console.log(task);
   return (
     <View style={styles.container}>
       {task.description !== "" && (

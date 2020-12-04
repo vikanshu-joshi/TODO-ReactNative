@@ -6,6 +6,8 @@ import {
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 
+//custom component for showing tasks in list
+
 const ListTile = ({
   title,
   subtitle,
